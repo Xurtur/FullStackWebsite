@@ -9,16 +9,16 @@
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  pointer-events: none;
 }
 
 #InnerPopup {
   position: relative;
-  background-color: rgba(0, 0, 0, 0.5);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   pointer-events: auto;
+  background: rgba(65, 74, 76, 0.5);
+  border-style: dashed;
 }
 
 #CloseButton {

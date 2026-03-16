@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import "./ItemAdder.css";
+import Popup from "../Login/Popup";
 
 export default function ItemUpload() {
+  const [openPop, setopenPop] = useState(false);
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -63,6 +65,7 @@ export default function ItemUpload() {
             setIsUploading(false);
             setUploadProgress(0);
             setFile(null);
+            close();
           }, 200);
           return 100;
         }
@@ -71,21 +74,25 @@ export default function ItemUpload() {
     }, 120);
   }
 
+  function close() {
+    setopenPop(!openPop);
+  }
+
   return (
-    <div id="OuterDiv">
-      <div id="InnerDiv">
+    <>
+      <Popup open={openPop} close={close}>
         <form id="AddProduct" onSubmit={handleSubmit}>
           <span>Product Name</span>
           <br />
-          <input placeholder="Name" />
+          <input placeholder="Name" required />
           <br />
           <span>Price</span>
           <br />
-          <input placeholder="Price" />
+          <input placeholder="Price" type="number" required />
           <br />
           <span>Product Description</span>
           <br />
-          <textarea placeholder="Product Description" />
+          <textarea placeholder="Product Description" required />
           <br />
 
           <label className="fileInputLabel">
@@ -94,6 +101,7 @@ export default function ItemUpload() {
               accept="image/*"
               onChange={handleFileChange}
               disabled={isUploading}
+              required
             />
             <span className="fileInputText">Choose an image</span>
           </label>
@@ -127,11 +135,14 @@ export default function ItemUpload() {
           )}
           <br />
           {/* disable button when uploading */}
-          <button type="submit" disabled={isUploading}>
+          <button id="Submit" type="submit" disabled={isUploading}>
             {isUploading ? "Uploading…" : "Add"}
           </button>
         </form>
-      </div>
-    </div>
+      </Popup>
+      <button id="AddItem" onClick={close}>
+        +
+      </button>
+    </>
   );
 }

@@ -45,6 +45,7 @@ export default function LoginForm({ onSwitch }) {
             type="text"
             placeholder="Username"
             value={LoginUsername}
+            required
             onChange={(e) => setLoginUsername(e.target.value)}
           />
           <br />
@@ -52,6 +53,7 @@ export default function LoginForm({ onSwitch }) {
             type="password"
             placeholder="Password"
             value={LoginPassword}
+            required
             onChange={(e) => setLoginPassword(e.target.value)}
           />
           <br />

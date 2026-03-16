@@ -20,7 +20,7 @@ function App() {
       <Popup open={OpenPop} close={close}>
         <div>
           {onSwitch ? (
-            <LoginForm onSwitch={() => setonSwitch(false)} close={close} />
+            <LoginForm onSwitch={() => setonSwitch(false)} />
           ) : (
             <RegisterForm onSwitch={() => setonSwitch(true)} />
           )}

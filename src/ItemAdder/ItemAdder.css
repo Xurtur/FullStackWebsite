@@ -1,29 +1,12 @@
-#OuterDiv {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #0f0f0f;
-}
-
-#InnerDiv {
-  padding: 2rem;
-  background-color: #1a1a1a;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  color: white;
+form {
+  align-content: center;
   text-align: center;
   font-size: xx-large;
-  font-style: bold;
 }
 
 textarea {
   width: 500px;
-  height: 500px;
+  height: 300px;
   resize: none;
 }
 
@@ -146,6 +129,22 @@ button:hover {
 }
 
 textarea {
-  color: rgba(255, 255, 255, 0.9);
   border: none;
+  border-radius: 10px;
+  font-size: large;
+  background-color: white;
+  color: black;
+}
+
+#AddItem {
+  position: fixed;
+  margin-top: 10vh;
+  margin-left: 1vw;
+  width: 5%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
