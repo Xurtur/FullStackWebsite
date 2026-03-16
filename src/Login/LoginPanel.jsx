@@ -6,34 +6,30 @@ export default function LoginForm({ onSwitch }) {
   const [LoginUsername, setLoginUsername] = useState("");
   const [LoginPassword, setLoginPassword] = useState("");
 
-  function LoginUser(e) {
+  async function LoginUser(e) {
     e.preventDefault();
+    try {
+      const url = new URL("http://localhost:3000/login");
+      url.search = new URLSearchParams({
+        username: LoginUsername.toString(),
+        password: LoginPassword.toString(),
+      });
 
-    fetch(
-      "http://localhost:3000/db?" +
-        new URLSearchParams({
-          username: LoginUsername.toString(),
-          password: LoginPassword.toString(),
-        }),
-      {
+      const Response = await fetch(url, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          "Content-type": "application/json",
         },
-      },
-    )
-      .then((Response) => {
-        if (!Response.ok) {
-          console.log("Error:" + Response.status);
-        }
-        return Response.text();
-      })
-      .then((data) => {
-        setMessage(data);
-      })
-      .catch((error) => {
-        console.error("Something went wrong: ", error);
       });
+
+      if (!Response.ok) {
+        console.log("Error: " + Response.status);
+      }
+      const data = await Response.text();
+      setMessage(data);
+    } catch (error) {
+      console.error("Something went wrong: ", error);
+    }
   }
 
   return (

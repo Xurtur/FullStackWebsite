@@ -9,7 +9,7 @@ export default function RegisterForm({ onSwitch }) {
   function RegisterUser(e) {
     e.preventDefault();
 
-    fetch("http://localhost:3000/db", {
+    fetch("http://localhost:3000/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

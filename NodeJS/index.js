@@ -43,10 +43,10 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/db/", (req, res) => {
+app.get("/login/", (req, res) => {
   const username = req.query.username;
   const password = req.query.password;
-
+  console.log(username, password);
   db.get(
     `SELECT Username FROM USER WHERE Username = ? and Password = ?`,
     [username, password],
@@ -62,7 +62,7 @@ app.get("/db/", (req, res) => {
   );
 });
 
-app.post("/db/", (req, res) => {
+app.post("/signup/", (req, res) => {
   const newUser = req.body;
 
   // Check If username is already taken if not register
