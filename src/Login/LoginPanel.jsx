@@ -59,7 +59,7 @@ export default function LoginForm({ onSwitch }) {
             Login
           </button>
           <br />
-          <span>{Message}</span>
+          <span id="message">{Message}</span>
         </form>
       </div>
     </>

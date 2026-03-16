@@ -42,7 +42,11 @@ input {
 }
 
 #PanelSwitch {
+  position: fixed;
   cursor: pointer;
+  font-size: large;
+  margin-left: -150px;
+  margin-top: 10px;
 }
 
 #LoginInner h1,
@@ -65,4 +69,8 @@ input {
 
 .primaryButton:hover {
   transform: translateY(-2px);
+}
+
+#message {
+  font-size: medium;
 }
