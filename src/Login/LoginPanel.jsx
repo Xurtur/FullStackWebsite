@@ -16,19 +16,22 @@ export default function LoginForm({ onSwitch }) {
       });
 
       const Response = await fetch(url, {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-type": "application/json",
         },
       });
 
       if (!Response.ok) {
-        console.log("Error: " + Response.status);
+        throw new Error("Login Failed");
       }
-      const data = await Response.text();
-      setMessage(data);
+      const { token, username, mes } = await Response.json();
+      localStorage.setItem("authtoken", token);
+      localStorage.setItem("username", username);
+      setMessage(mes);
     } catch (error) {
-      console.error("Something went wrong: ", error);
+      console.error("Login Error:", error);
+      setMessage("Invalid username or password.");
     }
   }
 

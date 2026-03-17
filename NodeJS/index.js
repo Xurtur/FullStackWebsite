@@ -15,7 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 // Create a table setup in the database if table does not exists
 let sql = `CREATE TABLE IF NOT EXISTS "USER" ( ID INTEGER PRIMARY KEY AUTOINCREMENT, 
                                               Username text NOT NULL UNIQUE,
-                                              Password text NOT NULL);
+                                              Password text NOT NULL
+                                              sessionToken TEXT);
                                               
           CREATE TABLE IF NOT EXISTS "PRODUCT" ( ID INTEGER PRIMARY KEY AUTOINCREMENT, 
                                               ProductName text NOT NULL, 
@@ -43,61 +44,60 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/login/", (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
-  console.log(username, password);
-  db.get(
-    `SELECT Username FROM USER WHERE Username = ? and Password = ?`,
-    [username, password],
-    (err, row) => {
-      if (err) {
-        console.error(err.message);
-      } else if (row) {
-        res.send("Logged In");
-      } else {
-        res.send("Invalid Username or Password");
-      }
-    },
-  );
+app.post("/login/", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.json({ message: "Invalid Username or Password" });
+  }
+  try {
+    const user = await db.get(
+      `SELECT id, Username FROM USER WHERE Username = ? and Password = ?`,
+      [username, password],
+    );
+
+    if (!user) {
+      return res.json({ message: "Invalid Username or Password" });
+    }
+
+    const token = Math.random().toString(36).substring(2);
+
+    const startSession = await db.run(
+      "UPDATE USER SET sessionToken = ? WHERE Id= ?",
+      [token, user.id],
+    );
+
+    return res.json({
+      token,
+      username: user.username,
+      message: "Login Successful",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
 });
 
-app.post("/signup/", (req, res) => {
+app.post("/signup/", async (req, res) => {
   const newUser = req.body;
 
-  // Check If username is already taken if not register
-  function checkUsername(username) {
-    return new Promise((resolve, reject) => {
-      db.get(
-        `SELECT Username FROM USER WHERE Username = ?`,
-        [username],
-        (err, row) => {
-          if (err) {
-            reject(err.message);
-          } else if (row) {
-            resolve("Username taken");
-          } else {
-            // If not register new user
-            db.run(
-              "INSERT INTO USER (ID, Username, Password) VALUES (?, ?, ?)",
-              [1, newUser.Username, newUser.Password],
-              function (err) {
-                if (err) {
-                  console.error(err.message);
-                }
-              },
-            );
-            resolve("Registered");
-          }
-        },
-      );
-    });
-  }
+  try {
+    const row = await db.get(`SELECT Username FROM USER WHERE Username = ?`, [
+      newUser.username,
+    ]);
 
-  // Check if username is already taken
-  checkUsername(newUser.Username)
-    .then((result) => res.send(result)) // Output: "Username taken" or "Username available"
-    .catch((err) => res.send(err));
+    if (row) {
+      return res.json({ message: "Username is taken." });
+    }
+
+    const result = await db.run(
+      "INSERT INTO USER (Username, Password) VALUES (?,?)",
+      [newUser.username, newUser.password],
+    );
+
+    res.json({ message: "Registered Successfully" });
+  } catch (error) {
+    console.error("Signup Error: ", error);
+    return res.status(500).json({ message: "Registration Failed" });
+  }
 });
 
 app.get("/user/shop", (req, res) => {});
