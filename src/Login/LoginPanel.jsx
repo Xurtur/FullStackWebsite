@@ -9,26 +9,33 @@ export default function LoginForm({ onSwitch }) {
   async function LoginUser(e) {
     e.preventDefault();
     try {
-      const url = new URL("http://localhost:3000/login");
-      url.search = new URLSearchParams({
-        username: LoginUsername.toString(),
-        password: LoginPassword.toString(),
-      });
-
-      const Response = await fetch(url, {
+      //request login from server
+      const response = await fetch("http://localhost:3000/login", {
+        credentials: "include",
         method: "POST",
         headers: {
-          "Content-type": "application/json",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          username: LoginUsername,
+          password: LoginPassword,
+        }),
       });
 
-      if (!Response.ok) {
-        throw new Error("Login Failed");
+      //if server response not ok throw error
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
       }
-      const { token, username, mes } = await Response.json();
-      localStorage.setItem("authtoken", token);
-      localStorage.setItem("username", username);
-      setMessage(mes);
+
+      //if server responds do this V
+      const { username, message } = await response.json();
+
+      if (message === "Invalid Username or Password") {
+        throw new Error("Invalid credentials");
+      }
+
+      setMessage(message);
     } catch (error) {
       console.error("Login Error:", error);
       setMessage("Invalid username or password.");

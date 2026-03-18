@@ -6,28 +6,30 @@ export default function RegisterForm({ onSwitch }) {
   const [Password, setPassword] = useState("");
   const [UsernameTaken, setUsernameTaken] = useState("");
 
-  function RegisterUser(e) {
+  async function RegisterUser(e) {
     e.preventDefault();
-
-    fetch("http://localhost:3000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ Username, Password }),
-    })
-      .then((Response) => {
-        if (!Response.ok) {
-          console.log("Error: " + Response.status);
-        }
-        return Response.text();
-      })
-      .then((data) => {
-        setUsernameTaken(data);
-      })
-      .catch((error) => {
-        console.error("Error sending data to API:", error);
+    try {
+      //request signup from server
+      const response = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: Username,
+          password: Password,
+        }),
       });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
+      }
+      const { message } = await response.json();
+      setUsernameTaken(message);
+    } catch (error) {
+      console.error("Login Error:", error);
+      setUsernameTaken("Invalid username or password.");
+    }
   }
 
   return (
@@ -55,7 +57,7 @@ export default function RegisterForm({ onSwitch }) {
             Register
           </button>
           <br />
-          <span>{UsernameTaken}</span>
+          <span id="message">{UsernameTaken}</span>
         </form>
       </div>
     </>
